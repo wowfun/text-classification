@@ -1,5 +1,6 @@
 # ours
 data/
+test_ws/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
