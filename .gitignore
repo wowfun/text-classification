@@ -1,6 +1,11 @@
 # ours
-data/
+## dir
 test_ws/
+tmp_ws/
+
+## files
+data/*.csv
+data/*/*.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,6 +1,7 @@
 ## TODO
 - [x] ***Proposal*** # 10.25
 - [ ] LSTM (baseline model)
+- [ ] LSTM + Attention
 - [ ] BERT
 
 
