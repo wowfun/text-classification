@@ -1,7 +1,9 @@
 # ours
 ## dir
+.vscode/
 test_ws/
 tmp_ws/
+saved_models/
 
 ## files
 data/*.csv
