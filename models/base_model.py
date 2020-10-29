@@ -1,3 +1,4 @@
+import os
 import tensorflow as tf
 
 
@@ -18,7 +19,7 @@ class BaseModel:
 
         history = self.model.fit(x=input, y=target, epochs=epochs,
                                  batch_size=batch_size,
-                                 validation_split=val_split, 
+                                 validation_split=val_split,
                                  callbacks=self.callbacks)
 
         return history
@@ -28,3 +29,10 @@ class BaseModel:
 
     def pred(self):
         pass
+
+    def load(self, checkpoint_path, latest=True):
+        if os.path.isdir(checkpoint_path) and latest:
+            checkpoint_path = tf.train.latest_checkpoint(checkpoint_path)
+            print("** load latest ckpt file: ", checkpoint_path)
+        self.model.load_weights(checkpoint_path)
+        return self.model
