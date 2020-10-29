@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import tensorflow as tf
 
 
@@ -27,8 +28,12 @@ class BaseModel:
     def test(self):
         pass
 
-    def pred(self):
-        pass
+    def pred(self,input,with_arg=True):
+        probs=self.model.predict(input)
+        if not with_arg:
+            return probs
+        preds=np.argmax(probs,axis=1)
+        return preds,probs
 
     def load(self, checkpoint_path, latest=True):
         if os.path.isdir(checkpoint_path) and latest:
