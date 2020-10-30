@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 from utils import data_helper, result_helper
 from models.lstm_model import LSTMModel
 
-# TODO: NOTE: 训练集、测试集在向量化时，必须一起同时向量化，否则两者的相同词语的词向量的表示会不一致，导致测试集的分类错误
+# TODO: 1. NOTE: 训练集、测试集在向量化时，必须一起同时向量化，否则两者的相同词语的词向量的表示会不一致，导致测试集的分类错误
+# 2. callbacks move to base model
 
 
 class Args:
