@@ -8,6 +8,7 @@ saved_models/
 ## files
 data/*.csv
 data/*/*.csv
+results/*.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
