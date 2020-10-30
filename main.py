@@ -1,5 +1,6 @@
 import os
 import time
+import pickle
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -13,11 +14,12 @@ from models.lstm_model import LSTMModel
 class Args:
     def __init__(self, model_name='lstm'):
         self.model_name = model_name
-        self.modes = ['train','pred']
+        self.modes = ['train','pred']  # 
 
         # 数据
         self.train_dataset = 'data/train/labeled_data_processed.csv'
         self.test_dataset = 'data/test_data_processed.csv'
+        self.tokenizer_path = 'data/tokenizer.pickle'
         self.val_split = 0.1
         self.max_num_words = 100000  # 最多保留不同词语词数，频率从大到小
         self.max_sequence_len = 256  # = input_len
@@ -68,31 +70,38 @@ if __name__ == "__main__":
         print('* Training')
         X, Y = data_helper.load_preprocessed_data_from_csv(
             args.train_dataset, with_Y=True, onehot=True)
+        tokenizer_mode='load'
+        if not os.path.exists(args.tokenizer_path):
+            tokenizer_mode='create'
         X, _ = data_helper.tokenize(
-            X, args.max_num_words, args.max_sequence_len)
+            lang=X, mode=tokenizer_mode, path=args.tokenizer_path, max_num_words=args.max_num_words,  max_sequence_len=args.max_sequence_len)
+
         print('* X shape ', X.shape)
         print('* Y shape ', Y.shape)
-        history = model1.train(
-            X, Y, epochs=args.epchos, batch_size=args.batch_size, val_split=args.val_split)
-        result_helper.save_train_plots(history)
+
+        # history = model1.train(
+        #     X, Y, epochs=args.epchos, batch_size=args.batch_size, val_split=args.val_split)
+        # result_helper.save_train_plots(history)
     else:
         model1.load(args.checkpoint_dir)
-
+    
+    model1.load(args.checkpoint_dir) # NOTE: tmp
     # pred
     if 'pred' in args.modes:
+        print('* Predicting')
         res_args = ResultArgs()
 
         X_test = data_helper.load_preprocessed_data_from_csv(
             args.test_dataset, with_Y=False)
         X_test, _ = data_helper.tokenize(
-            X_test, args.max_num_words, args.max_sequence_len)
+            X_test, mode='load', path=args.tokenizer_path, max_num_words=args.max_num_words, max_sequence_len=args.max_sequence_len)
         preds, _ = model1.pred(X_test)
-        print('* X for pred shape ',X_test.shape)
+        print('* X for pred shape ', X_test.shape)
         print('* preds shape ', preds.shape)
         test_df = pd.read_csv(args.test_dataset)
-        id_series=test_df['id']
+        id_series = test_df['id']
         result_helper.results_to_submit(preds, save_path=res_args.save_path,
-                                        id_series=id_series, 
+                                        id_series=id_series,
                                         class_label_to_class_dict=res_args.class_label_to_class_dict,
                                         rank_label_to_rank_dict=res_args.rank_label_to_rank_dict,
                                         class_label_to_rank_label_dict=res_args.class_label_to_rank_label_dict)
