@@ -14,7 +14,7 @@ from models.lstm_model import LSTMModel
 class Args:
     def __init__(self, model_name='lstm'):
         self.model_name = model_name
-        self.modes = ['train','pred']  # 
+        self.modes = ['train', 'pred']  #
 
         # 数据
         self.train_dataset = 'data/train/labeled_data_processed.csv'
@@ -70,22 +70,21 @@ if __name__ == "__main__":
         print('* Training')
         X, Y = data_helper.load_preprocessed_data_from_csv(
             args.train_dataset, with_Y=True, onehot=True)
-        tokenizer_mode='load'
+        tokenizer_mode = 'load'
         if not os.path.exists(args.tokenizer_path):
-            tokenizer_mode='create'
+            tokenizer_mode = 'create'
         X, _ = data_helper.tokenize(
             lang=X, mode=tokenizer_mode, path=args.tokenizer_path, max_num_words=args.max_num_words,  max_sequence_len=args.max_sequence_len)
 
         print('* X shape ', X.shape)
         print('* Y shape ', Y.shape)
 
-        # history = model1.train(
-        #     X, Y, epochs=args.epchos, batch_size=args.batch_size, val_split=args.val_split)
-        # result_helper.save_train_plots(history)
+        history = model1.train(
+            X, Y, epochs=args.epchos, batch_size=args.batch_size, val_split=args.val_split)
+        result_helper.save_train_plots(history)
     else:
         model1.load(args.checkpoint_dir)
-    
-    model1.load(args.checkpoint_dir) # NOTE: tmp
+
     # pred
     if 'pred' in args.modes:
         print('* Predicting')
