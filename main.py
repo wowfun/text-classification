@@ -24,7 +24,7 @@ class Args:
         self.num_labels = 7  # = output_units
 
         # 模型超参
-        self.epchos = 1
+        self.epchos = 60
         self.batch_size = 64
         self.embedding_dims = 128
 
