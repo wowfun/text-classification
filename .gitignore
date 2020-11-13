@@ -139,3 +139,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+tools/pre_model/tf_model.h5
