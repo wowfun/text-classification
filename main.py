@@ -18,13 +18,13 @@ class Args:
         self.modes = ['train', 'pred']  #
 
         # 数据
-        self.train_dataset = 'data/train/labeled_data_processed.csv'
+        self.train_dataset = 'data/train/train_processed.csv'
         self.test_dataset = 'data/test_data_processed.csv'
-        self.tokenizer_path = 'data/tokenizer.pickle'
+        self.tokenizer_path = 'data/tokenizer-10.pickle'
         self.val_split = 0.1
         self.max_num_words = 100000  # 最多保留不同词语词数，频率从大到小
         self.max_sequence_len = 256  # = input_len
-        self.num_labels = 7  # = output_units
+        self.num_labels = 10  # = output_units
 
         # 模型超参
         self.epchos = 60
@@ -51,6 +51,10 @@ class ResultArgs:
         self.rank_label_to_rank_dict = {0: '可公开', 1: '低风险', 2: '中风险', 3: '高风险'}
         self.class_label_to_rank_label_dict = {
             0: 0, 1: 2, 2: 1, 3: 1, 4: 3, 5: 2, 6: 3, 7: 1, 8: 0, 9: 0}
+
+        @property
+        def class_to_class_label_dict(self):
+            return {val:key for key,val in self.class_label_to_class_dict.items()}
 
 
 if __name__ == "__main__":
