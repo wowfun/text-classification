@@ -4,14 +4,25 @@ import tensorflow as tf
 
 
 class BaseModel:
-    def __init__(self, model=None, loss='categorical_crossentropy', metrics=['accuracy'], callbacks=[]):
+    def __init__(self, model=None, loss='categorical_crossentropy', metrics=['accuracy'], checkpoint_path=None, callbacks=[]):
         self.model = model
         self.loss = loss
         self.metrics = metrics
-        self.callbacks = callbacks
+        self.checkpoint_path = checkpoint_path
+        if callbacks != []:
+            self.callbacks = callbacks
+        else:
+            self.set_callbacks()
 
     def build(self):
         pass
+
+    def set_callbacks(self):
+        save_model_cb = tf.keras.callbacks.ModelCheckpoint(
+            filepath=self.checkpoint_path, monitor='val_loss', mode='auto', save_best_only=True, save_weights_only=True, verbose=1, save_freq='epoch')
+
+        self.callbacks = []
+        self.callbacks.append(save_model_cb)
 
     def train(self, input, target=None, epochs=20, batch_size=64, val_split=0.1):
         self.model.compile(loss=self.loss,
@@ -28,12 +39,12 @@ class BaseModel:
     def test(self):
         pass
 
-    def pred(self,input,with_arg=True):
-        probs=self.model.predict(input)
+    def pred(self, input, with_arg=True):
+        probs = self.model.predict(input)
         if not with_arg:
             return probs
-        preds=np.argmax(probs,axis=1)
-        return preds,probs
+        preds = np.argmax(probs, axis=1)
+        return preds, probs
 
     def load(self, checkpoint_path, latest=True):
         if os.path.isdir(checkpoint_path) and latest:
