@@ -22,7 +22,7 @@ class BaseModel:
         save_model_cb = tf.keras.callbacks.ModelCheckpoint(
             filepath=self.checkpoint_path, monitor='val_loss', mode='auto', save_best_only=True, save_weights_only=True, verbose=1, save_freq='epoch')
         early_stopping_cb=tf.keras.callbacks.EarlyStopping(
-            monitor='val_loss', patience=3
+            monitor='val_loss', patience=5
         )
         self.callbacks = []
         self.callbacks.append(save_model_cb)

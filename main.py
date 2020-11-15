@@ -96,7 +96,7 @@ if __name__ == "__main__":
         history = model1.train(
             X, Y, epochs=args.epchos, batch_size=args.batch_size, val_split=args.val_split)
         result_helper.save_metrics(history)
-        model1.save(args.h5_path) # h5
+        model1.model.save(args.h5_path) # h5
     else:
         model1.load(args.checkpoint_dir)
         # model1 = tf.keras.models.load_model(args.h5_path) # load h5
