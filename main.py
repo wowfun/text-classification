@@ -27,9 +27,10 @@ class Args:
         self.num_labels = 10  # = output_units
 
         # 模型超参
-        self.epchos = 20
+        self.epchos = 60
         self.batch_size = 64
         self.embedding_dims = 128
+
 
     @property
     def checkpoint_dir(self):
@@ -41,6 +42,11 @@ class Args:
     @property
     def checkpoint_path(self):
         return self.checkpoint_dir + "/{}.ckpt".format(time.strftime("%Y%m%d"))
+
+    @property
+    def h5_path(self): # 不使用checkpoint保存模型，使用.h5保存
+        return "./saved_models/{}.h5".format(self.model_name)
+
 
 
 class ResultArgs:
@@ -67,8 +73,8 @@ if __name__ == "__main__":
     # X_pred.to_csv('data/test_data_processed.csv', index=False)
 
     # build
-    # model1 = LSTMModel(args.checkpoint_path)
-    model1=BiLSTM(args.checkpoint_path)
+    model1 = LSTMModel(args.checkpoint_path)
+    # model1=BiLSTM(args.checkpoint_path)
 
     model1.build(input_len=args.max_sequence_len,
                  lstm_units=args.max_sequence_len, output_units=args.num_labels)
@@ -90,8 +96,10 @@ if __name__ == "__main__":
         history = model1.train(
             X, Y, epochs=args.epchos, batch_size=args.batch_size, val_split=args.val_split)
         result_helper.save_metrics(history)
+        model1.save(args.h5_path) # h5
     else:
         model1.load(args.checkpoint_dir)
+        # model1 = tf.keras.models.load_model(args.h5_path) # load h5
 
     # pred
     if 'pred' in args.modes:

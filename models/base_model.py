@@ -1,4 +1,5 @@
 import os
+# os.environ["CUDA_VISIBLE_DEVICES"]="-1" # 禁用gpu
 import numpy as np
 import tensorflow as tf
 
@@ -20,9 +21,13 @@ class BaseModel:
     def set_callbacks(self):
         save_model_cb = tf.keras.callbacks.ModelCheckpoint(
             filepath=self.checkpoint_path, monitor='val_loss', mode='auto', save_best_only=True, save_weights_only=True, verbose=1, save_freq='epoch')
-
+        early_stopping_cb=tf.keras.callbacks.EarlyStopping(
+            monitor='val_loss', patience=3
+        )
         self.callbacks = []
         self.callbacks.append(save_model_cb)
+        self.callbacks.append(early_stopping_cb)
+        print('*** callback nums ',len(self.callbacks))
 
     def train(self, input, target=None, epochs=20, batch_size=64, val_split=0.1):
         self.model.compile(loss=self.loss,
