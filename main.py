@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from utils import data_helper, result_helper
-from models.lstm_model import LSTMModel
+from models.lstm_model import LSTMModel, BiLSTM
 
 # TODO: 1. NOTE: 训练集、测试集在向量化时，必须一起同时向量化，否则两者的相同词语的词向量的表示会不一致，导致测试集的分类错误
 # 2. callbacks move to base model
@@ -27,7 +27,7 @@ class Args:
         self.num_labels = 10  # = output_units
 
         # 模型超参
-        self.epchos = 60
+        self.epchos = 20
         self.batch_size = 64
         self.embedding_dims = 128
 
@@ -58,7 +58,7 @@ class ResultArgs:
 
 
 if __name__ == "__main__":
-    args = Args()
+    args = Args('bilstm')
 
     # 处理 测试集 原数据
     # X_pred = pd.read_csv(args.dataset_2)
@@ -67,7 +67,9 @@ if __name__ == "__main__":
     # X_pred.to_csv('data/test_data_processed.csv', index=False)
 
     # build
-    model1 = LSTMModel(args.checkpoint_path)
+    # model1 = LSTMModel(args.checkpoint_path)
+    model1=BiLSTM(args.checkpoint_path)
+
     model1.build(input_len=args.max_sequence_len,
                  lstm_units=args.max_sequence_len, output_units=args.num_labels)
 
@@ -87,7 +89,7 @@ if __name__ == "__main__":
 
         history = model1.train(
             X, Y, epochs=args.epchos, batch_size=args.batch_size, val_split=args.val_split)
-        result_helper.save_train_plots(history)
+        result_helper.save_metrics(history)
     else:
         model1.load(args.checkpoint_dir)
 

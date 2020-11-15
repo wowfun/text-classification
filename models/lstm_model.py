@@ -9,7 +9,7 @@ class LSTMModel(BaseModel):
         super().__init__(model=None, loss='categorical_crossentropy',
                          metrics=['accuracy'], checkpoint_path=checkpoint_path, callbacks=[])
 
-    def build(self, input_len, output_units, max_num_words=100000, embedding_dims=128, lstm_units=128, dropout=0.2, recurrent_dropout=0.2):
+    def build(self, input_len, output_units, max_num_words=100000, embedding_dims=128, lstm_units=128, dropout=0.1, recurrent_dropout=0.1):
         self.model = tf.keras.models.Sequential([
             tf.keras.layers.Embedding(
                 max_num_words, embedding_dims, input_length=input_len),
@@ -26,17 +26,18 @@ class BiLSTM(LSTMModel):
     def __init__(self, checkpoint_path=None):
         super().__init__(checkpoint_path=checkpoint_path)
 
-    def build(self, input_len, output_units, max_num_words=100000, embedding_dims=128, lstm_units=128, dropout=0.2, recurrent_dropout=0.2):
+    def build(self, input_len, output_units, max_num_words=100000, embedding_dims=128, lstm_units=128, dropout=0.1, recurrent_dropout=0.2, regularizer_factor=0.001):
         self.model = tf.keras.models.Sequential([
             tf.keras.layers.Embedding(
                 max_num_words, embedding_dims, input_length=input_len),
             tf.keras.layers.SpatialDropout1D(dropout),
             tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(
-                lstm_units, return_sequences=True, kernel_regularizer=regularizers.l2(0.001))),
+                lstm_units, return_sequences=True, kernel_regularizer=regularizers.l2(regularizer_factor))),
             tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(
-                lstm_units, kernel_regularizer=regularizers.l2(0.001))),
+                int(lstm_units/2), kernel_regularizer=regularizers.l2(regularizer_factor))),
             tf.keras.layers.Dense(
-                output_units, activation='relu', kernel_regularizer=regularizers.l2(0.001)),
+                int(lstm_units/4), activation='relu', kernel_regularizer=regularizers.l2(regularizer_factor)),
+            tf.keras.layers.Dropout(dropout),
             tf.keras.layers.Dense(output_units, activation='softmax'),
 
         ])
