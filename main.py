@@ -54,7 +54,7 @@ class ResultArgs:
 
         @property
         def class_to_class_label_dict(self):
-            return {val:key for key,val in self.class_label_to_class_dict.items()}
+            return {val: key for key, val in self.class_label_to_class_dict.items()}
 
 
 if __name__ == "__main__":
@@ -68,7 +68,8 @@ if __name__ == "__main__":
 
     # build
     model1 = LSTMModel(args.checkpoint_path)
-    model1.build(input_len=args.max_sequence_len, output_units=args.num_labels)
+    model1.build(input_len=args.max_sequence_len,
+                 lstm_units=args.max_sequence_len, output_units=args.num_labels)
 
     # train or load
     if 'train' in args.modes:
