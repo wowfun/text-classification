@@ -1,5 +1,5 @@
 import os
-# os.environ["CUDA_VISIBLE_DEVICES"]="-1" # 禁用gpu
+os.environ["CUDA_VISIBLE_DEVICES"]="-1" # 禁用gpu
 import numpy as np
 import tensorflow as tf
 
@@ -26,7 +26,7 @@ class BaseModel:
         )
         self.callbacks = []
         self.callbacks.append(save_model_cb)
-        self.callbacks.append(early_stopping_cb)
+        # self.callbacks.append(early_stopping_cb)
         print('*** callback nums ',len(self.callbacks))
 
     def train(self, input, target=None, epochs=20, batch_size=64, val_split=0.1):

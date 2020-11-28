@@ -18,7 +18,7 @@ class Args:
         self.modes = ['train', 'pred']  #
 
         # 数据
-        self.train_dataset = 'data/train/train_processed.csv'
+        self.train_dataset = 'data/train/train_processed_v1.csv'
         self.test_dataset = 'data/test_data_processed.csv'
         self.tokenizer_path = 'data/tokenizer-10.pickle'
         self.val_split = 0.1
@@ -27,7 +27,7 @@ class Args:
         self.num_labels = 10  # = output_units
 
         # 模型超参
-        self.epchos = 60
+        self.epchos = 20
         self.batch_size = 64
         self.embedding_dims = 128
 
@@ -73,8 +73,8 @@ if __name__ == "__main__":
     # X_pred.to_csv('data/test_data_processed.csv', index=False)
 
     # build
-    model1 = LSTMModel(args.checkpoint_path)
-    # model1=BiLSTM(args.checkpoint_path)
+    # model1 = LSTMModel(args.checkpoint_path)
+    model1=BiLSTM(args.checkpoint_path)
 
     model1.build(input_len=args.max_sequence_len,
                  lstm_units=args.max_sequence_len, output_units=args.num_labels)
